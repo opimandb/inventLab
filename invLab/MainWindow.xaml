@@ -5,8 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:invLab"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="Inventory App" Height="700" Width="1200" WindowStartupLocation="CenterScreen">
+    <Grid ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="80px"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Column="0" Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Test1"></MenuItem>
+                <MenuItem Header="Test2"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Help"></MenuItem>
+        </Menu>
+        <Button Grid.Column="0" Grid.Row="1" Width="60px" Content="Добавить" Height="60px" HorizontalAlignment="Left" Margin="10 0 0 0"/>
+        <Button Grid.Column="0" Grid.Row="1" Width="60px" Content="Изменить" Height="60px" HorizontalAlignment="Left" Margin="80 0 0 0"/>
+        <Button Grid.Column="0" Grid.Row="1" Width="60px" Content="Удалить" Height="60px" HorizontalAlignment="Left" Margin="150 0 0 0"/>
+        <TabControl Grid.Column="0" Grid.Row="2">
+            <TabItem Header="Предметы??">
+                <DataGrid />
+            </TabItem>
+            <TabItem Header="Сотрудники?">Вторая вкладка</TabItem>
+        </TabControl>
     </Grid>
 </Window>
