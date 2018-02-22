@@ -22,14 +22,38 @@
             </MenuItem>
             <MenuItem Header="Help"></MenuItem>
         </Menu>
-        <Button Grid.Column="0" Grid.Row="1" Width="60px" Content="Добавить" Height="60px" HorizontalAlignment="Left" Margin="10 0 0 0"/>
-        <Button Grid.Column="0" Grid.Row="1" Width="60px" Content="Изменить" Height="60px" HorizontalAlignment="Left" Margin="80 0 0 0"/>
-        <Button Grid.Column="0" Grid.Row="1" Width="60px" Content="Удалить" Height="60px" HorizontalAlignment="Left" Margin="150 0 0 0"/>
-        <TabControl Grid.Column="0" Grid.Row="2">
-            <TabItem Header="Предметы??">
-                <DataGrid />
+        <Button Grid.Column="0" x:Name="addBtn" Grid.Row="1" Width="60px" Content="Добавить" Height="60px" HorizontalAlignment="Left" Margin="10 0 0 0" Click="Button_Click"/>
+        <Button Grid.Column="0" x:Name="changeBtn" Grid.Row="1" Width="60px" Content="Изменить" Height="60px" HorizontalAlignment="Left" Margin="80 0 0 0" Click="change_click"/>
+        <Button Grid.Column="0" x:Name="delBtn" Grid.Row="1" Width="60px" Content="Удалить" Height="60px" HorizontalAlignment="Left" Margin="150 0 0 0"/>
+        <TabControl x:Name="tabC" Grid.Column="0" Grid.Row="2">
+            <TabItem Header="Обордуование">
+                <DataGrid ItemsSource="{Binding}" x:Name="cameraGrid" AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray" RowBackground="#FFCAD9EE" AlternatingRowBackground="White" ColumnWidth="*" IsReadOnly="True" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Номер" Binding="{Binding Path=id}" />
+                        <DataGridTextColumn Header="Название" Binding="{Binding Path=Name}" />
+                        <DataGridTextColumn Header="Место установки" Binding="{Binding Path=Roomid}" />
+                        <DataGridTextColumn Header="Ответственный" Binding="{Binding Path=Empid}" />
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
-            <TabItem Header="Сотрудники?">Вторая вкладка</TabItem>
+            <TabItem Header="Аудитории">
+                <DataGrid ItemsSource="{Binding}" x:Name="roomGrid" AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray" RowBackground="#FFCAD9EE" AlternatingRowBackground="White" ColumnWidth="*" IsReadOnly="True" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Блок" Binding="{Binding Path=Housing}" />
+                        <DataGridTextColumn Header="Аудитория" Binding="{Binding Path=Number}" />
+                        <DataGridTextColumn Header="Тип" Binding="{Binding Path=Type}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Сотрудники">
+                <DataGrid ItemsSource="{Binding}" x:Name="teachGrid" AutoGenerateColumns="False" HorizontalGridLinesBrush="DarkGray" RowBackground="#FFCAD9EE" AlternatingRowBackground="White" ColumnWidth="*" IsReadOnly="True" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ФИО" Binding="{Binding Path=Fio}" />
+                        <DataGridTextColumn Header="Факультет" Binding="{Binding Path=Faculty}" />
+                        <DataGridTextColumn Header="Вакансия" Binding="{Binding Path=Vacansy}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>
