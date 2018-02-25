@@ -49,7 +49,7 @@ namespace invLab
                     obj = new Employe();
                     break;
             }
-            DataWindow newW = new DataWindow(obj, tab, 0);
+            DataWindow newW = new DataWindow(tab, 0, db, 0);
             if (newW.ShowDialog()==true)
             {
                 obj = newW.data;
@@ -72,27 +72,37 @@ namespace invLab
         private void change_click(object sender, RoutedEventArgs e)
         {
             bool error = false;
+            int _id = 0;
             int tab = Convert.ToInt32(tabC.SelectedIndex.ToString());
             switch (tab)
             {
                 case 0: if (cameraGrid.SelectedIndex >= 0)
+                    {
                         obj = db.Cameras.Local.ElementAt<Camera>(cameraGrid.SelectedIndex);
+                        _id = db.Cameras.Local.ElementAt<Camera>(cameraGrid.SelectedIndex).id;
+                    }
                     else { MessageBox.Show("Не выделен элемент"); error = true; }
                     break;
                 case 1:
                     if (roomGrid.SelectedIndex >= 0)
+                    {
                         obj = db.Rooms.Local.ElementAt<Room>(roomGrid.SelectedIndex);
+                        _id = db.Rooms.Local.ElementAt<Room>(roomGrid.SelectedIndex).id;
+                    }
                     else { MessageBox.Show("Не выделен элемент"); error = true; }
                     break;
                 case 2:
                     if (teachGrid.SelectedIndex >= 0)
+                    {
                         obj = db.Employes.Local.ElementAt<Employe>(teachGrid.SelectedIndex);
+                        _id = db.Employes.Local.ElementAt<Employe>(teachGrid.SelectedIndex).id;
+                    }
                     else { MessageBox.Show("Не выделен элемент"); error = true; }
                     break;
             }
             if (!error)
             {
-                DataWindow newW = new DataWindow(obj, tab, 1);
+                DataWindow newW = new DataWindow(tab, 1, db, _id);
                 Camera _cam; Room _room; Employe _emp;
                 if (newW.ShowDialog() == true)
                 {
@@ -159,6 +169,7 @@ namespace invLab
                     else MessageBox.Show("Не выделен элемент");
                     break;
             }
+            db.SaveChanges();
         }
     }
 }

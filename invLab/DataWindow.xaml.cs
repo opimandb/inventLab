@@ -20,30 +20,69 @@ namespace invLab
     /// </summary>
     public partial class DataWindow : Window
     {
+        private List<Employe> employes;
+        private ApplicationContext db2;
+        private int roomid=0, empid = 0;
+        private List<Room> rooms;
         private int index, oper;
         private string btnText;
         public object data;
         public Camera _camera;
         public Room _room;
-        public Employe _employe; 
+        public Employe _employe;
 
-        public DataWindow(object data, int ind, int move) //экземпляр класса, его вид(аудитория, сотрудник, камера) и операция (добавление, изменение)
+        public DataWindow(int ind, int move, ApplicationContext db, int _id) //его вид(аудитория, сотрудник, камера) и операция (добавление, изменение)
         {
             InitializeComponent();
             index = ind;
+            getEls(db, _id);
             oper = move;
             if (move == 0) btnText = "Добавить";
             else btnText = "Изменить";
-            Print(data);
+            Print();
         }
 
-        public void Print(object data)
+        private void getEls(ApplicationContext db, int _id)
+        {
+            employes = db.Employes.Local.ToList();
+            rooms = db.Rooms.Local.ToList();
+            if (_id==0)
+                switch (index)
+                {
+                    case 0:
+                        this.DataContext = new Camera();
+                        break;
+                    case 1:
+                        this.DataContext = new Room();
+                        break;
+                    case 2:
+                        this.DataContext = new Employe();
+                        break;
+                }
+            else
+            switch (index)
+            {
+                case 0:
+                    this.DataContext = db.Cameras.Where(c => c.id == _id).FirstOrDefault();
+                    roomid = db.Cameras.Where(c => c.id == _id).Select(c => c.Roomid).FirstOrDefault();
+                    empid = db.Cameras.Where(c => c.id == _id).Select(c => c.Empid).FirstOrDefault();
+                    break;
+                case 1:
+                    this.DataContext = db.Rooms.Where(c => c.id == _id).FirstOrDefault();
+                    break;
+                case 2:
+                    this.DataContext = db.Employes.Where(c => c.id == _id).FirstOrDefault();
+                    break;
+            }
+        }
+
+        public void Print()
         {
             string[] names = new string[1], name2 = new string[1];
             switch (index) {
                 case 0:
                 names = new string[16] { "Номер аудитории", "Ответственный", "Название камеры", "Тип камеры", "Тип матрицы", "Фокусное расстояние", "Разрешение", "Частота", "Ночной режим", "Угол обзора", "Вес", "Цена", "Дата поставки", "Срок амортизации", "Дата выхода из эксп", "Статус" };
-                name2 = new string[16] { "Roomid", "Empid", "Name", "Camera_type", "Matrix_type", "Focus", "Resolution", "Speed", "Night_mode", "Angle", "Weigth", "Cost", "Start_date", "Using_term", "Finish_date", "Status" };
+                name2 = new string[16] { "Roomid", "Empid", "Name", "Camera_type", "Matrix_type", "Focus", "Resolution", "Speed", "Night_mode", "Angle", "Weight", "Cost", "Start_date", "Using_term", "Finish_date", "Status" };
                     break;
                 case 2:
                     names = new string[3] { "ФИО", "Факультет", "Должность" };
@@ -54,7 +93,6 @@ namespace invLab
                     name2 = new string[3] { "Housing", "Number", "Type"};
                     break;
             }
-            this.DataContext = data;
 
             //добавляем нужное количество строк
             //dwgrid.ShowGridLines = true;  //разделительные полосы
@@ -72,12 +110,50 @@ namespace invLab
                 bind.Path = new PropertyPath(name2[i]);
                 bind.Mode = BindingMode.TwoWay;
                 Label l = new Label { Content = names[i], VerticalAlignment = VerticalAlignment.Center };
-                TextBox b = new TextBox { Name = name2[i], Height = 30, IsEnabled = true, Margin=new Thickness(0,0,15,0), VerticalAlignment = VerticalAlignment.Center };
-                b.SetBinding(TextBox.TextProperty, bind);
+                if (!(index == 0 && (i == 0 || i == 1 || i == 15)))
+                {
+                    TextBox b = new TextBox { Name = name2[i], Height = 30, IsEnabled = true, Margin = new Thickness(0, 0, 15, 0), VerticalAlignment = VerticalAlignment.Center };
+                    b.SetBinding(TextBox.TextProperty, bind);
+                    dwgrid.Children.Add(b);
+                    Grid.SetRow(b, i);
+                    Grid.SetColumn(b, 1);
+                }
+                else
+                {
+                    ComboBox b = new ComboBox { Name = name2[i], Height = 30, IsEnabled = true, Margin = new Thickness(0, 0, 15, 0), VerticalAlignment = VerticalAlignment.Center };
+                    dwgrid.Children.Add(b);
+                    Grid.SetRow(b, i);
+                    Grid.SetColumn(b, 1);
+                    int si = 0, cc=0;
+                    if (i==0)
+                    {
+                        foreach (Room t in rooms)
+                        {
+                            b.Items.Add(t.Number);
+                            if (t.id == roomid) si = cc;
+                            cc++;
+                        }
+                        cc = 0;
+                    }
+                    if (i == 1)
+                    {
+                        foreach (Employe t in employes) { 
+                            b.Items.Add(t.Fio);
+                        if (t.id == empid) si = cc;
+                        cc++;
+                    }
+                        cc = 0;
+                    }
+                    b.SetBinding(ComboBox.SelectedIndexProperty, bind);
+                    b.SelectedIndex = si;
+                    if (i==15)
+                    {
+                        b.ItemsSource = new List<string> { "Не используется", "Используется"};
+                    }
+                }
                 dwgrid.Children.Add(l);
-                dwgrid.Children.Add(b);
-                Grid.SetRow(l, i); Grid.SetRow(b, i);
-                Grid.SetColumn(l, 0); Grid.SetColumn(b, 1);
+                Grid.SetRow(l, i); 
+                Grid.SetColumn(l, 0); 
             }
             Button btn = new Button { Content = btnText, Height=30, Width=100 };
             btn.Click += new RoutedEventHandler(Button_Click);
@@ -93,6 +169,8 @@ namespace invLab
                 if (index == 0)
                 {
                     _camera = (Camera)this.DataContext;
+                    _camera.Roomid = rooms[_camera.Roomid].id;
+                    _camera.Empid = employes[_camera.Empid].id;
                 }
                 if (index == 1) {
                     _room = (Room)this.DataContext; }

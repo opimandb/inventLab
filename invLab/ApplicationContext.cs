@@ -7,7 +7,7 @@ using System.Data.Entity;
 
 namespace invLab
 {
-    class ApplicationContext : DbContext
+    public class ApplicationContext : DbContext
     {
         public ApplicationContext() : base("DefaultConnection")
         {
