@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace invLab
 {
-    class Employe : INotifyPropertyChanged
+    public class Employe : INotifyPropertyChanged
     {
         private string fio;
         private string vacansy;

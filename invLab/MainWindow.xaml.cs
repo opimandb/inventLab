@@ -50,7 +50,23 @@ namespace invLab
                     break;
             }
             DataWindow newW = new DataWindow(obj, tab, 0);
-            newW.Show();
+            if (newW.ShowDialog()==true)
+            {
+                obj = newW.data;
+                switch (tab)
+                {
+                    case 0:
+                        db.Cameras.Add((Camera)obj);
+                        break;
+                    case 1:
+                        db.Rooms.Add((Room)obj);
+                        break;
+                    case 2:
+                        db.Employes.Add((Employe)obj);
+                        break;
+                }
+                db.SaveChanges();
+            }
         }
 
         private void change_click(object sender, RoutedEventArgs e)
@@ -77,7 +93,71 @@ namespace invLab
             if (!error)
             {
                 DataWindow newW = new DataWindow(obj, tab, 1);
-                newW.Show();
+                Camera _cam; Room _room; Employe _emp;
+                if (newW.ShowDialog() == true)
+                {
+                    switch (tab)
+                    {
+                        case 0:
+                            _cam = db.Cameras.Find(newW._camera.id);
+                            if (_cam != null)
+                            {
+                                _cam = newW._camera;
+                                db.Entry(_cam).State = EntityState.Modified;
+                            }
+                            break;
+                        case 1:
+                            _room = db.Rooms.Find(newW._room.id);
+                            if (_room != null)
+                            {
+                                _room = newW._room;
+                                db.Entry(_room).State = EntityState.Modified;
+                            }
+                            break;
+                        case 2:
+                            _emp = db.Employes.Find(newW._employe.id);
+                            if (_emp != null)
+                            {
+                                _emp = newW._employe;
+                                db.Entry(_emp).State = EntityState.Modified;
+                            }
+                            break;
+                    }
+                    db.SaveChanges();
+                }
+            }
+        }
+
+        private void remove_click(object sender, RoutedEventArgs e)
+        {
+            //можно добавить форму с просьбой подтвердить удаление
+            int tab = Convert.ToInt32(tabC.SelectedIndex.ToString());
+            switch (tab)
+            {
+                case 0:
+                    if (cameraGrid.SelectedIndex >= 0)
+                    {
+                        obj = db.Cameras.Local.ElementAt<Camera>(cameraGrid.SelectedIndex);
+                        db.Cameras.Remove((Camera)obj);
+                    }
+                    else  MessageBox.Show("Не выделен элемент");
+                    break;
+                case 1:
+                    if (roomGrid.SelectedIndex >= 0)
+                    {
+                        obj = db.Rooms.Local.ElementAt<Room>(roomGrid.SelectedIndex);
+                        db.Rooms.Remove((Room)obj);
+                    }
+                    else MessageBox.Show("Не выделен элемент");
+                    break;
+                case 2:
+                    if (teachGrid.SelectedIndex >= 0)
+                    {
+                        obj = db.Employes.Local.ElementAt<Employe>(teachGrid.SelectedIndex);
+                        db.Employes.Remove((Employe)obj);
+                    }
+                    else MessageBox.Show("Не выделен элемент");
+                    break;
             }
         }
     }

@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace invLab
 {
-    class Room : INotifyPropertyChanged
+    public class Room : INotifyPropertyChanged
     {
         private string housing; // блок
         private string number;
